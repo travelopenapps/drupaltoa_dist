@@ -1,0 +1,7 @@
+name = TOA_B2C 
+description = "First TOA search module"
+core = 7.x
+files[] = toa_b2c.module
+files[] = toa_b2c_admin.inc
+configure = admin/config/toa_b2c
+package = TOA Search

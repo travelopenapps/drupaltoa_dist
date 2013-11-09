@@ -1,0 +1,362 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function toa_dist_install() {
+  // Run the installation of perfil standard
+  include_once DRUPAL_ROOT . '/profiles/standard/standard.install';
+  standard_install();
+
+  // Enable the defauld theme.
+  db_update('system')
+      ->fields(array('status' => 1))
+      ->condition('type', 'theme')
+      ->condition('name', 'business')
+      ->execute();
+  variable_set('theme_default', 'business');
+
+
+  toa_dist_enable_block();
+  toa_dist_node_type();
+
+  // Default "Offers page" to not be promoted and have comments disabled.
+  variable_set('node_options_offers', array('status'));
+  variable_set('comment_offers', COMMENT_NODE_HIDDEN);
+
+  // Don't display date and author information for "Offers page" nodes by default.
+  variable_set('node_submitted_offers', FALSE);
+
+
+  toa_dist_instance_field_image_offers();
+  toa_dist_create_offers();
+
+  // Enable imce_wysiwyg pluging.
+  db_update('system')
+      ->fields(array('status' => 1))
+      ->condition('type', 'module')
+      ->condition('name', 'imce_wysiwyg')
+      ->execute();
+
+  toa_dist_set_wysiwyg_settings();
+}
+
+/**
+ * Enable some blocks.
+ */
+function toa_dist_enable_block() {
+  $default_theme = variable_get('theme_default', 'business');
+  $blocks = array(
+    array(
+      'module' => 'search',
+      'delta' => 'form',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => -1,
+      'region' => 'sidebar_first',
+      'pages' => '',
+      'cache' => -1,
+    ),
+    array(
+      'module' => 'toa_b2c',
+      'delta' => 'toa_search',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'sidebar_first',
+      'pages' => '',
+      'cache' => -1,
+    ),
+    array(
+      'module' => 'user',
+      'delta' => 'login',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 1,
+      'region' => 'sidebar_first',
+      'pages' => '',
+      'cache' => -1,
+    ),
+    array(
+      'module' => 'follow',
+      'delta' => 'site',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 2,
+      'region' => 'sidebar_first',
+      'pages' => '',
+      'cache' => -1,
+    ),
+    array(
+      'module' => 'system',
+      'delta' => 'navigation',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 3,
+      'region' => 'sidebar_first',
+      'pages' => '',
+      'cache' => -1,
+    ),
+    array(
+      'module' => 'languageicons',
+      'delta' => 'languageicons_place',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 4,
+      'region' => 'sidebar_first',
+      'pages' => '',
+      'cache' => -1,
+    ),
+  );
+  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
+  foreach ($blocks as $block) {
+    $query->values($block);
+  }
+  $query->execute();
+}
+
+/**
+ * Insert default pre-defined offers node into the database.
+ */
+function toa_dist_node_type() {
+  $type = array(
+    'type' => 'offers',
+    'name' => st('Offers'),
+    'base' => 'node_content',
+    'description' => st('Use this type of content for publishing offers.'),
+    'custom' => 1,
+    'modified' => 1,
+    'locked' => 0,
+  );
+  $type = node_type_set_defaults($type);
+  node_type_save($type);
+  node_add_body_field($type);
+}
+
+/**
+ * Create instance of field_image of offers
+ */
+function toa_dist_instance_field_image_offers() {
+  $instance = array(
+    'field_name' => 'field_image',
+    'entity_type' => 'node',
+    'label' => 'Image',
+    'bundle' => 'offers',
+    'description' => st('Upload an image to go with this article.'),
+    'required' => FALSE,
+    'settings' => array(
+      'file_directory' => 'field/image',
+      'file_extensions' => 'png gif jpg jpeg',
+      'max_filesize' => '',
+      'max_resolution' => '',
+      'min_resolution' => '',
+      'alt_field' => TRUE,
+      'title_field' => '',
+    ),
+    'widget' => array(
+      'type' => 'image_image',
+      'settings' => array(
+        'progress_indicator' => 'throbber',
+        'preview_image_style' => 'thumbnail',
+      ),
+      'weight' => -1,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'image',
+        'settings' => array('image_style' => 'large', 'image_link' => ''),
+        'weight' => -1,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'type' => 'image',
+        'settings' => array('image_style' => 'medium', 'image_link' => 'content'),
+        'weight' => -1,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+}
+
+/**
+ *  Insert content.
+ */
+function toa_dist_create_offers() {
+
+  include_once DRUPAL_ROOT . '/profiles/toa_dist/content.inc';
+
+  // insert pages 
+  foreach ($content_node_page as $value) {
+
+    $newNode = (object) NULL;
+    $newNode->type = 'page';
+    $newNode->uid = 0;
+    $newNode->created = strtotime("now");
+    $newNode->changed = strtotime("now");
+    $newNode->status = 1;
+    $newNode->comment = 0;
+    $newNode->promote = 0;
+    $newNode->moderate = 0;
+    $newNode->sticky = 0;
+    $newNode->language = 'und';
+    $newNode->title = $value['title'];
+    $newNode->body['und'][0]['value'] = $value['body'];
+    $newNode->body['und'][0]['safe_value'] = $value['body'];
+    $newNode->body['und'][0]['format'] = 'full_html';
+
+    node_object_prepare($newNode);
+    node_save($newNode);
+  }
+
+  // create link meu
+  $fields = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'node/1',
+    'router_path' => 'node/%',
+    'link_title' => 'TOA B2c',
+    'module' => 'menu',
+    'depth' => 1,
+  );
+  db_insert('menu_links')->fields($fields)->execute();
+  $fields = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'node/2',
+    'router_path' => 'node/%',
+    'link_title' => 'Travel Open App',
+    'module' => 'menu',
+    'depth' => 1,
+  );
+  db_insert('menu_links')->fields($fields)->execute();
+
+
+
+  //insert offers
+  foreach ($content_node as $value) {
+
+    $newNode = (object) NULL;
+    $newNode->type = 'offers';
+    $newNode->uid = 0;
+    $newNode->created = strtotime("now");
+    $newNode->changed = strtotime("now");
+    $newNode->status = 1;
+    $newNode->comment = 0;
+    $newNode->promote = 1;
+    $newNode->moderate = 0;
+    $newNode->sticky = 1;
+    $newNode->language = 'und';
+    $newNode->title = $value['title'];
+    $newNode->body['und'][0]['value'] = $value['body'];
+    $newNode->body['und'][0]['summary'] = $value['summary'];
+    $newNode->body['und'][0]['safe_value'] = $value['body'];
+    $newNode->body['und'][0]['format'] = 'full_html';
+
+    node_object_prepare($newNode);
+
+    $file_path = drupal_get_path('profile', 'toa_dist') . '/images/' . $value['image'];
+    $file = (object) array(
+          "uid" => 1,
+          "uri" => $file_path,
+          "filemime" => file_get_mimetype($file_path),
+          "status" => 1
+    );
+
+    $file = file_copy($file, 'public://');
+    $newNode->field_image['und'][0] = (array) $file;
+
+    node_save($newNode);
+  }
+
+  // insert articles 
+  foreach ($content_node_article as $value) {
+
+    $newNode = (object) NULL;
+    $newNode->type = 'article';
+    $newNode->uid = 0;
+    $newNode->created = strtotime("now");
+    $newNode->changed = strtotime("now");
+    $newNode->status = 1;
+    $newNode->comment = 0;
+    $newNode->promote = 1;
+    $newNode->moderate = 0;
+    $newNode->sticky = 0;
+    $newNode->language = 'und';
+    $newNode->title = $value['title'];
+    $newNode->body['und'][0]['value'] = $value['body'];
+    $newNode->body['und'][0]['safe_value'] = $value['body'];
+    $newNode->body['und'][0]['format'] = 'full_html';
+
+    node_object_prepare($newNode);
+    node_save($newNode);
+  }
+}
+
+/**
+ * Sets default WYSIWYG settings 
+ */
+function toa_dist_set_wysiwyg_settings() {
+  $settings = array(
+    'default' => 1,
+    'user_choose' => 1,
+    'show_toggle' => 1,
+    'theme' => 'advanced',
+    'language' => 'en',
+    'buttons' => array(
+      'default' => array(
+        'Bold' => 1,
+        'Italic' => 1,
+        'Underline' => 1,
+        'Strike' => 1,
+        'JustifyLeft' => 1,
+        'JustifyCenter' => 1,
+        'JustifyRight' => 1,
+        'BulletedList' => 1,
+        'NumberedList' => 1,
+        'Undo' => 1,
+        'Redo' => 1,
+        'Link' => 1,
+        'Unlink' => 1,
+        'Anchor' => 1,
+        'Image' => 1,
+        'Superscript' => 1,
+        'Subscript' => 1,
+        'Blockquote' => 1,
+        'HorizontalRule' => 1,
+        'Cut' => 1,
+        'Copy' => 1,
+        'Paste' => 1,
+        'PasteFromWord' => 1,
+        'RemoveFormat' => 1,
+        'SpecialChar' => 1,
+        'Format' => 1,
+        'Table' => 1,
+        'Maximize' => 1,
+      ),
+      'imce' => array(
+        'imce' => 1,
+      ),
+    ),
+    'toolbar_loc' => 'top',
+    'toolbar_align' => 'left',
+    'path_loc' => 'bottom',
+    'resizing' => 1,
+    'verify_html' => 1,
+    'preformatted' => 0,
+    'convert_fonts_to_spans' => 1,
+    'remove_linebreaks' => 1,
+    'apply_source_formatting' => 0,
+    'paste_auto_cleanup_on_paste' => 1,
+    'block_formats' => 'p,address,pre,h2,h3,h4,h5,h6,div',
+    'css_setting' => 'self',
+    'css_path' => '%t/css/editor.css',
+    'css_classes' => '',
+  );
+
+  $fields = array(
+    'format' => 'full_html',
+    'editor' => 'ckeditor',
+    'settings' => serialize($settings),
+  );
+
+  db_insert('wysiwyg')->fields($fields)->execute();
+}

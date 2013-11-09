@@ -1,0 +1,154 @@
+# $Id$
+#
+# Spanish translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  toa_b2c_admin.inc: n/a
+#  toa_b2c.module: n/a
+#  toa_b2c.info: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2013-10-31 12:12+0100\n"
+"PO-Revision-Date: 2013-10-31 12:12+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Spanish <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: toa_b2c_admin.inc:17
+msgid "Add user"
+msgstr "Usuari"
+
+#: toa_b2c_admin.inc:19
+msgid "Enter the user name for TOA."
+msgstr "Introduïu l'usuari per TOA"
+
+#: toa_b2c_admin.inc:24
+msgid "Add password"
+msgstr "Contrasenya"
+
+#: toa_b2c_admin.inc:26
+msgid "Enter password for TOA"
+msgstr "Introduïu la contrasenya per TOA"
+
+#: toa_b2c_admin.inc:31
+msgid "Add url"
+msgstr "URL"
+
+#: toa_b2c_admin.inc:33
+msgid "Enter the url Searcher, e.g.: http://reservas.emergya.es/searcher.htt"
+msgstr "Introduïu la url del cercador, ex.: http://reservas.emergya.es/searcher.htt"
+
+#: toa_b2c_admin.inc:38
+msgid "Home agencia"
+msgstr "Página princpal de la agencia"
+
+#: toa_b2c_admin.inc:40
+msgid "The agencies Home page. e.g.: white-emergya"
+msgstr "Pàgina princpal de l'agència"
+
+#: toa_b2c_admin.inc:45
+msgid "Domain Magnolia"
+msgstr "Dominio Magnolia"
+
+#: toa_b2c_admin.inc:47
+msgid "Domain Magnolia your account, e.g.: http://cmsmagnolia.hotetec.com"
+msgstr "El dominio en el seu compte de Magnolia, ex.: Http://cmsmagnolia.hotetec.com"
+
+#: toa_b2c_admin.inc:52
+msgid "jQuery version"
+msgstr "Versió jQuery"
+
+#: toa_b2c_admin.inc:59
+msgid "jQuery version using TOA, default is 1.8.3"
+msgstr "Versió de jQuery usada en TOA, per defecte és 1.8.3"
+
+#: toa_b2c_admin.inc:63
+msgid "jQuery ui version"
+msgstr "Versió jQuery UI"
+
+#: toa_b2c_admin.inc:69
+msgid "jQuery ui version using TOA, default is 1.9.2"
+msgstr "Versió de jQuery UI para TOA, per defecte és 1.9.2"
+
+#: toa_b2c_admin.inc:87
+msgid "Your browser does not support iframe."
+msgstr "El seu navegador no suporta iframe."
+
+#: toa_b2c.module:134 toa_b2c.info:0
+msgid "TOA Search"
+msgstr "Buscador TOA"
+
+#: toa_b2c.module:147
+msgid "Searcher TOA"
+msgstr "Cercador TOA"
+
+#: toa_b2c.module:213
+msgid "The main functionality of this module is to formalize tour packages bookings \nthrough Travel Open Apps platform (Platform tourist distribution of Valencia).</p>\n\n<p>For the module is operating really must have an account on the Open Travel \nPlatform Apps (http://www.travelopenapps.org/alta-de-usuarios/).</p>\n\n<p>This module provides a block search form travel destination through which end \nusers can make reservations. It also includes an area where managers are \nconnected via iframe with administration panels Open Travel Platform Apps \nfor configuration and customization of web hosting offers displayed."
+msgstr "La Principal funcionalitat del mòdul És la de formalitzar Reserves de Paquets Turístics a traves de aa plataforma Travel Open Apps (Plataforma de Distribució Turística de la Comunitat Valenciana).</p><p>Per al mòdul està funcionant realment ha de tenir un compte a la plataforma Travel Open Apps (http://www.travelopenapps.org/alta-de-usuarios/).</p><p>Aquest mòdul proporciona un formulari de cerca de destinació bloc a través del qual els usuaris finals poden fer reserves. També inclou una zona on els gerents estan connectats a través d'iframe amb l'administració  Open Travel Platform Apps per a la configuració i personalització d'allotjament web ofereix aparegui."
+
+#: toa_b2c.module:14;50
+msgid "TOA b2c"
+msgstr ""
+
+#: toa_b2c.module:20
+msgid "TOA b2c settings"
+msgstr "Configuración de TOA b2c"
+
+#: toa_b2c.module:21
+msgid "Settings for module TOA B2c"
+msgstr "Cofigurar mòdul TOA b2c"
+
+#: toa_b2c.module:30
+msgid "TOA b2c admin"
+msgstr "Administrar TOA b2c"
+
+#: toa_b2c.module:31;43;51
+msgid "Manages TOA b2c"
+msgstr "Administrar TOA b2c"
+
+#: toa_b2c.module:42
+msgid "Menus"
+msgstr "Menús"
+
+#: toa_b2c.module:60
+msgid "My Data"
+msgstr "Meus Dades"
+
+#: toa_b2c.module:65
+msgid "My Pages"
+msgstr "Meus pàgines"
+
+#: toa_b2c.module:75
+msgid "Booking Engine"
+msgstr "Motor Reserves"
+
+#: toa_b2c.module:85
+msgid "Booking Engine Hotel"
+msgstr "Reserves de l'hotel"
+
+#: toa_b2c.module:95
+msgid "Properties"
+msgstr ""
+
+#: toa_b2c.module:105
+msgid "AdminCentral"
+msgstr "Propietats"
+
+#: toa_b2c.module:115
+msgid "Google Analytics"
+msgstr "Analítiques Google"
+
+#: toa_b2c.info:0
+msgid "TOA_B2C"
+msgstr ""
+
+#: toa_b2c.info:0
+msgid "First TOA search module"
+msgstr "Primer mòdul de cerca TOA"
+

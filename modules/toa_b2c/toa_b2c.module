@@ -1,0 +1,234 @@
+<?php
+
+/*
+ * @file
+ * TOA container module
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function toa_b2c_menu() {
+    // config menu
+    $items['admin/config/toab2c'] = array(
+        'title' => 'TOA b2c',
+        'access callback' => 'user_access',
+        'access arguments' => array('administer site configuration'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $items['admin/config/toab2c/settings'] = array(
+        'title' => 'TOA b2c settings',
+        'description' => 'Settings for module TOA B2c',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('toa_b2c_settings'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer site configuration'),
+        'type' => MENU_NORMAL_ITEM,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    $items['admin/config/toab2c/admin'] = array(
+        'title' => 'TOA b2c admin',
+        'description' => 'Manages TOA b2c',
+        'page callback' => '_menu_toa_b2c_page',
+        'page arguments' => array('my_data'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer menu'),
+        'type' => MENU_NORMAL_ITEM,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    // adminn menu
+    $items['admin/toa_b2c/menu/iframe'] = array(
+        'title' => 'Menus',
+        'description' => 'Manages TOA b2c',
+        'page callback' => 'toa_b2c_login_magnolia',
+        'access arguments' => array('administer menu'),
+        'type' => MENU_CALLBACK,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    $items['admin/toa_b2c/menu'] = array(
+        'title' => 'TOA b2c',
+        'description' => 'Manages TOA b2c',
+        'page callback' => '_menu_toa_b2c_page',
+        'page arguments' => array('my_data'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer menu'),
+        'type' => MENU_NORMAL_ITEM,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    $items['admin/toa_b2c/menu/my_data'] = array(
+        'title' => 'My Data',
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'weight' => 1,
+    );
+    $items['admin/toa_b2c/menu/my_pages'] = array(
+        'title' => 'My Pages',
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => '_menu_toa_b2c_page',
+        'page arguments' => array('my_pages'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer menu'),
+        'weight' => 2,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    $items['admin/toa_b2c/menu/booking_engine'] = array(
+        'title' => 'Booking Engine',
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => '_menu_toa_b2c_page',
+        'page arguments' => array('booking_engine'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer menu'),
+        'weight' => 3,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    $items['admin/toa_b2c/menu/booking_engine_hotel'] = array(
+        'title' => 'Booking Engine Hotel',
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => '_menu_toa_b2c_page',
+        'page arguments' => array('booking_engine_hotel'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer menu'),
+        'weight' => 4,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    $items['admin/toa_b2c/menu/properties'] = array(
+        'title' => 'Properties',
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => '_menu_toa_b2c_page',
+        'page arguments' => array('properties'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer menu'),
+        'weight' => 5,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    $items['admin/toa_b2c/menu/admincentral'] = array(
+        'title' => 'AdminCentral',
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => '_menu_toa_b2c_page',
+        'page arguments' => array('admincentral'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer menu'),
+        'weight' => 6,
+        'file' => 'toa_b2c_admin.inc',
+    );
+    $items['admin/toa_b2c/menu/google_analytics'] = array(
+        'title' => 'Google Analytics',
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => '_menu_toa_b2c_page',
+        'page arguments' => array('google_analytics'),
+        'access callback' => 'user_access',
+        'access arguments' => array('administer menu'),
+        'weight' => 6,
+        'file' => 'toa_b2c_admin.inc',
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function toa_b2c_block_info() {
+    $blocks = array();
+    $blocks['toa_search'] = array(
+        'info' => t('TOA Search'),
+        'cache' => DRUPAL_NO_CACHE,
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function toa_b2c_block_view($delta = '') {
+    $block = array();
+    switch ($delta) {
+        case 'toa_search':
+            $block['subject'] = t('Searcher TOA');
+            $block['content'] = theme('toa_b2c_search_content_block');
+            break;
+    }
+    return $block;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function toa_b2c_theme($existing, $type, $theme, $path) {
+    $theme = array(
+        'toa_b2c_search_content_block' => array(
+            'type' => 'module',
+        ),
+        'toa_b2c_admin_page' => array(
+            'file' => 'toa_b2c_admin.inc',
+            'variables' => array(
+                'url' => '',
+                'login' => FALSE,
+            ),
+        ),
+    );
+    return $theme;
+}
+
+/**
+ * Implements theme_toa_b2c_search_content_block().
+ */
+function theme_toa_b2c_search_content_block() {
+    $jq_version = variable_get('toa_b2c_jquery_version', '1.8.3');
+    $jqui_version = variable_get('toa_b2c_jqueryui_version', '1.9.2');
+    // Add external js libraries necessary
+    drupal_add_js('http://ajax.googleapis.com/ajax/libs/jqueryui/' . $jqui_version . '/jquery-ui.min.js', 'external');
+    drupal_add_js('http://cmsmagnolia.hotetec.com/portal-resources/js/jquery.hotetec.utilities.js', 'external');
+    drupal_add_js('http://cmsmagnolia.hotetec.com/portal-resources/js/white/utils/jquery.hotetec.jsonp-processor.js', 'external');
+    drupal_add_js('http://cmsmagnolia.hotetec.com/portal-resources/js/white/finder/jquery.hotetec.white-searcher.js', 'external');
+
+    // Add external css necessary
+    drupal_add_css('http://code.jquery.com/ui/' . $jqui_version . '/themes/base/jquery-ui.css', 'external');
+
+    // Add js necessary for the search block.
+    $setting['toa_b2c_url'] = variable_get('toa_b2c_url');
+    drupal_add_js(array('toa_b2c' => $setting), 'setting');
+    drupal_add_library('toa_b2c', 'toa_b2c-library', FALSE);
+    drupal_add_js(drupal_get_path('module', 'toa_b2c') . '/js/toa_b2c_search_block.js');
+
+    return '<div id="searcher"></div>';
+}
+
+/**
+ * Implements hook_js_alter().
+ */
+function toa_b2c_js_alter(&$javascript) {
+  //alter jquery if  is present toa_b2c_toa_search
+  $block_exists = FALSE;
+  $blocks = _block_load_blocks();
+
+  foreach ($blocks as $block) {
+    if (array_key_exists('toa_b2c_toa_search', $block)) {
+      $block_exists = TRUE;
+    }
+  }
+
+  if ($block_exists) {
+    $jq_version = variable_get('toa_b2c_jquery_version', '1.8.3');
+    $javascript['misc/jquery.js']['data'] = 'http://ajax.googleapis.com/ajax/libs/jquery/' . $jq_version . '/jquery.min.js';
+    $javascript['misc/jquery.js']['version'] = "$jq_version";
+  }
+}
+
+/**
+ * Implements hook_help().
+ */
+function toa_b2c_help($path, $arg) {
+    switch ($path) {
+        case 'admin/help#toa_b2c':
+            return '<p>' . t('The main functionality of this module is to formalize tour packages bookings 
+through Travel Open Apps platform (Platform tourist distribution of Valencia).</p>
+
+<p>For the module is operating really must have an account on the Open Travel 
+Platform Apps (http://www.travelopenapps.org/alta-de-usuarios/).</p>
+
+<p>This module provides a block search form travel destination through which end 
+users can make reservations. It also includes an area where managers are 
+connected via iframe with administration panels Open Travel Platform Apps 
+for configuration and customization of web hosting offers displayed.') . '</p>';
+    }
+}
